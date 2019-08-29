@@ -1,6 +1,6 @@
 # ykoath
 
-[![Documentation](https://godoc.org/github.com/yawn/ykoath?status.svg)](http://godoc.org/github.com/yawn/ykoath) [![Go Report Card](https://goreportcard.com/badge/github.com/yawn/ykoath)](https://goreportcard.com/report/github.com/yawn/ykoath) [![Build Status](https://travis-ci.org/yawn/ykoath.svg?branch=master)](https://travis-ci.org/yawn/ykoath) [![Build status windows](https://ci.appveyor.com/api/projects/status/50vxo9e5jqql3y2b?svg=true)](https://ci.appveyor.com/project/yawn/ykoath)
+[![Documentation](https://godoc.org/github.com/canopo/ykoath?status.svg)](http://godoc.org/github.com/canopo/ykoath) [![Go Report Card](https://goreportcard.com/badge/github.com/canopo/ykoath)](https://goreportcard.com/report/github.com/canopo/ykoath) [![Build Status](https://travis-ci.org/canopo/ykoath.svg?branch=master)](https://travis-ci.org/canopo/ykoath) [![Build status windows](https://ci.appveyor.com/api/projects/status/50vxo9e5jqql3y2b?svg=true)](https://ci.appveyor.com/project/canopo/ykoath)
 
 The package `ykoath` implements the Yubikey [YOATH protocol](https://developers.yubico.com/OATH/YKOATH_Protocol.html) over USB with the following exceptions:
 

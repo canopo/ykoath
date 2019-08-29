@@ -124,7 +124,7 @@ func (o *OATH) send(cla, ins, p1, p2 byte, data ...[]byte) (*tvs, error) {
 
 		if code.IsMore() {
 
-			send = []byte{0x00, 0xa5, 0x00, 0x00}
+			send = []byte{0x00, 0x06, 0x00, 0x00}
 
 			if o.Debug != nil {
 				o.Debug("MORE %d", int(code[1]))

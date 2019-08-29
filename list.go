@@ -6,14 +6,12 @@ import (
 
 // Name encapsulates the result of the "LIST" instruction
 type Name struct {
-	Algorithm Algorithm
-	Type      Type
-	Name      string
+	Name string
 }
 
 // String returns a string representation of the algorithm
 func (n *Name) String() string {
-	return fmt.Sprintf("%s (%s %s)", n.Name, n.Algorithm.String(), n.Type.String())
+	return fmt.Sprintf("%s", n.Name)
 }
 
 // List sends a "LIST" instruction, return a list of OATH credentials
@@ -37,9 +35,7 @@ func (o *OATH) List() ([]*Name, error) {
 			for _, value := range values {
 
 				name := &Name{
-					Algorithm: Algorithm(value[0] & 0x0f),
-					Name:      string(value[1:]),
-					Type:      Type(value[0] & 0xf0),
+					Name: string(value),
 				}
 
 				names = append(names, name)
