@@ -3,6 +3,7 @@ package ykoath
 import (
 	"encoding/binary"
 	"fmt"
+	"math"
 )
 
 const (
@@ -54,7 +55,7 @@ func (o *OATH) calculate(name string) (string, error) {
 
 	binary.BigEndian.PutUint64(buf, uint64(timestamp))
 
-	res, err := o.send(0x00, 0xa2, 0x00, 0x01,
+	res, err := o.send(0x00, 0x04, 0x00, 0x00,
 		write(0x71, []byte(name)),
 		write(0x74, buf),
 	)
@@ -95,7 +96,7 @@ func (o *OATH) calculateAll() (map[string]string, error) {
 
 	binary.BigEndian.PutUint64(buf, uint64(timestamp))
 
-	res, err := o.send(0x00, 0xa4, 0x00, 0x01,
+	res, err := o.send(0x00, 0x05, 0x00, 0x00,
 		write(0x74, buf),
 	)
 
@@ -142,7 +143,7 @@ func (o *OATH) calculateAll() (map[string]string, error) {
 func otp(value []byte) string {
 
 	digits := value[0]
-	code := binary.BigEndian.Uint32(value[1:])
+	code := binary.BigEndian.Uint32(value[1:]) % uint32(math.Pow10(int(digits)))
 	return fmt.Sprintf(fmt.Sprintf("%%0%dd", digits), code)
 
 }

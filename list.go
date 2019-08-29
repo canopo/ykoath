@@ -21,7 +21,7 @@ func (o *OATH) List() ([]*Name, error) {
 
 	var names []*Name
 
-	res, err := o.send(0x00, 0xa1, 0x00, 0x00)
+	res, err := o.send(0x00, 0x03, 0x00, 0x00)
 
 	if err != nil {
 		return nil, err
