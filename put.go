@@ -1,19 +1,9 @@
 package ykoath
 
-import (
-	"fmt"
-)
-
-const errNametooLong = "name too long (%d > 64)"
-
 // Put sends a "PUT" instruction, storing a new / overwriting an existing OATH
 // credentials with an algorithm and type, 6 or 8 digits one-time password,
 // shared secrets and touch-required bit
 func (o *OATH) Put(name string, a Algorithm, t Type, digits uint8, key []byte, touch bool) error {
-
-	if l := len(name); l > 64 {
-		return fmt.Errorf(errNametooLong, l)
-	}
 
 	var (
 		alg = (0xf0|byte(a))&0x0f | byte(t)

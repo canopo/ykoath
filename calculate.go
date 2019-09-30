@@ -9,72 +9,53 @@ import (
 const (
 	errNoValuesFound = "no values found in response (% x)"
 	errUnknownName   = "no such name configued (%s)"
+	errInvalidDigits = "invalid digits (%d)"
 	touchRequired    = "touch-required"
 )
 
-// Calculate is a high-level function that first identifies all TOTP credentials
-// that are configured and returns the matching one (if no touch is required) or
-// fires the callback and then fetches the name again while blocking during
-// the device awaiting touch
-func (o *OATH) Calculate(name string, touchRequiredCallback func(string) error) (string, error) {
-
-	res, err := o.calculateAll()
-
-	if err != nil {
-		return "", nil
-	}
-
-	code, ok := res[name]
-
-	if !ok {
-		return "", fmt.Errorf(errUnknownName, name)
-	}
-
-	if code == touchRequired {
-
-		if err := touchRequiredCallback(name); err != nil {
-			return "", err
-		}
-
-		return o.calculate(name)
-
-	}
-
-	return code, nil
-
-}
-
-// calculate implements the "CALCULATE" instruction to fetch a single
+// Calculate implements the "CALCULATE" instruction to fetch a single
 // truncated TOTP response
-func (o *OATH) calculate(name string) (string, error) {
+func (o *OATH) Calculate(name string, touchRequiredCallback func(string) error) (string, error) {
 
 	var (
 		buf       = make([]byte, 8)
 		timestamp = o.Clock().Unix() / 30
 	)
+	var res *tvs
 
 	binary.BigEndian.PutUint64(buf, uint64(timestamp))
 
-	res, err := o.send(0x00, 0x04, 0x00, 0x00,
-		write(0x71, []byte(name)),
-		write(0x74, buf),
-	)
+	touchThenCalc := 1
+	for retry := 0; retry < touchThenCalc; retry++ {
 
-	if err != nil {
-		return "", err
-	}
+		res, err := o.send(0x00, 0x04, 0x00, 0x00,
+			write(0x71, []byte(name)),
+			write(0x74, buf),
+		)
 
-	for _, tag := range res.tags {
+		if err != nil {
+			return "", err
+		}
 
-		value := res.values[tag][0]
+		for _, tag := range res.tags {
 
-		switch tag {
+			value := res.values[tag][0]
 
-		case 0x76:
-			return otp(value), nil
+			switch tag {
 
-		default:
-			return "", fmt.Errorf(errUnknownTag, tag)
+			case 0x76:
+				return otp(value), nil
+
+			case 0x7c:
+				if err := touchRequiredCallback(name); err != nil {
+					return "", err
+				}
+				touchThenCalc = 2
+
+			default:
+				return "", fmt.Errorf(errUnknownTag, tag)
+			}
+
 		}
 
 	}
@@ -83,9 +64,9 @@ func (o *OATH) calculate(name string) (string, error) {
 
 }
 
-// calculateAll implements the "CALCULATE ALL" instruction to fetch all TOTP
+// CalculateAll implements the "CALCULATE ALL" instruction to fetch all TOTP
 // tokens and their codes (or a constant indicating a touch requirement)
-func (o *OATH) calculateAll() (map[string]string, error) {
+func (o *OATH) CalculateAll() (map[string]string, error) {
 
 	var (
 		buf       = make([]byte, 8)
@@ -143,6 +124,9 @@ func (o *OATH) calculateAll() (map[string]string, error) {
 func otp(value []byte) string {
 
 	digits := value[0]
+	if digits != 6 && digits != 8 {
+		return fmt.Sprintf(errInvalidDigits, digits)
+	}
 	code := binary.BigEndian.Uint32(value[1:]) % uint32(math.Pow10(int(digits)))
 	return fmt.Sprintf(fmt.Sprintf("%%0%dd", digits), code)
 
