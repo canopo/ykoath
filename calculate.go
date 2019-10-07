@@ -38,9 +38,9 @@ func (o *OATH) Calculate(name string, touchRequiredCallback func(string) error) 
 			return "", err
 		}
 
-		for _, tag := range res.tags {
+		for i, tag := range res.tags {
 
-			value := res.values[tag][0]
+			value := res.values[i]
 
 			switch tag {
 
@@ -86,30 +86,26 @@ func (o *OATH) CalculateAll() (map[string]string, error) {
 		return nil, err
 	}
 
-	for _, tag := range res.tags {
+	for i, tag := range res.tags {
 
-		values := res.values[tag]
+		value := res.values[i]
 
-		for _, value := range values {
+		switch tag {
 
-			switch tag {
+		case 0x71:
+			names = append(names, string(value))
 
-			case 0x71:
-				names = append(names, string(value))
+		case 0x7c:
+			codes = append(codes, touchRequired)
 
-			case 0x7c:
-				codes = append(codes, touchRequired)
+		case 0x76:
+			codes = append(codes, otp(value))
 
-			case 0x76:
-				codes = append(codes, otp(value))
+		case 0x77:
+			codes = append(codes, hotpNoResponse)
 
-			case 0x77:
-				codes = append(codes, hotpNoResponse)
-
-			default:
-				return nil, fmt.Errorf(errUnknownTag, tag)
-			}
-
+		default:
+			return nil, fmt.Errorf(errUnknownTag, tag)
 		}
 
 	}

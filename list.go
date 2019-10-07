@@ -25,22 +25,18 @@ func (o *OATH) List() ([]*Name, error) {
 		return nil, err
 	}
 
-	for _, tag := range res.tags {
-
-		values := res.values[tag]
+	for i, tag := range res.tags {
 
 		switch tag {
 		case 0x72:
 
-			for _, value := range values {
+			value := res.values[i]
 
-				name := &Name{
-					Name: string(value),
-				}
-
-				names = append(names, name)
-
+			name := &Name{
+				Name: string(value),
 			}
+
+			names = append(names, name)
 
 		default:
 			return nil, fmt.Errorf(errUnknownTag, tag)
