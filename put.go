@@ -21,7 +21,7 @@ func (o *OATH) Put(name string, a Algorithm, t Type, digits uint8, key []byte, t
 
 	if counter != 0 {
 		imfVal := make([]byte, 4)
-		binary.LittleEndian.PutUint32(imfVal, counter)
+		binary.BigEndian.PutUint32(imfVal, counter)
 		prp = write(0x7A, imfVal)
 	}
 
