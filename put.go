@@ -16,7 +16,7 @@ func (o *OATH) Put(name string, a Algorithm, t Type, digits uint8, key []byte, t
 
 	if touch || increasing {
 		var b2i = map[bool]byte{false: 0, true: 1}
-		prp = write(0x78, []byte{b2i[touch] | b2i[increasing]<<1})
+		prp = write(0x78, []byte{b2i[touch]<<1 | b2i[increasing]})
 	}
 
 	if counter != 0 {

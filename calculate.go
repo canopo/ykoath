@@ -11,6 +11,7 @@ const (
 	errUnknownName   = "no such name configued (%s)"
 	errInvalidDigits = "invalid digits (%d)"
 	touchRequired    = "touch-required"
+	hotpNoResponse   = "hotp-no-response"
 )
 
 // Calculate implements the "CALCULATE" instruction to fetch a single
@@ -101,6 +102,9 @@ func (o *OATH) CalculateAll() (map[string]string, error) {
 
 			case 0x76:
 				codes = append(codes, otp(value))
+
+			case 0x77:
+				codes = append(codes, hotpNoResponse)
 
 			default:
 				return nil, fmt.Errorf(errUnknownTag, tag)

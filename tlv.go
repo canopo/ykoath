@@ -88,7 +88,7 @@ func write(tag byte, values ...[]byte) []byte {
 
 	// write some length unless this is a one byte value (e.g. for the PUT
 	// instruction's "property" byte)
-	if length > 1 {
+	if tag != 0x78 {
 		data = append(data, byte(length))
 	}
 
