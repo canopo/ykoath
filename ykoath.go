@@ -57,7 +57,7 @@ func New() (*OATH, error) {
 
 	for _, reader := range readers {
 
-		if strings.Contains(reader, "Cano") && strings.Contains(reader, "OATH") {
+		if strings.Contains(reader, "Cano") && strings.Contains(reader, " 01") {
 
 			card, err := context.Connect(reader, scard.ShareShared, scard.ProtocolAny)
 
