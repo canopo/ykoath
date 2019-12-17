@@ -1,4 +1,4 @@
-module github.com/canopo/ykoath
+module github.com/canokeys/ykoath
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
