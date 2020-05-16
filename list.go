@@ -28,7 +28,9 @@ func (o *OATH) List() ([]*Name, error) {
 	for i, tag := range res.tags {
 
 		switch tag {
-		case 0x72:
+		case 0x72: // old API
+			fallthrough
+		case 0x71: // new API
 
 			value := res.values[i]
 
@@ -37,7 +39,8 @@ func (o *OATH) List() ([]*Name, error) {
 			}
 
 			names = append(names, name)
-
+		case 0x75:
+			// ignore the algorithm/type byte
 		default:
 			return nil, fmt.Errorf(errUnknownTag, tag)
 		}
