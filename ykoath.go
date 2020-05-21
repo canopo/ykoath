@@ -27,7 +27,7 @@ type OATH struct {
 	Clock   func() time.Time
 	context context
 	Debug   debugger
-} 
+}
 
 const (
 	errFailedToConnect            = "failed to connect to reader"
@@ -42,7 +42,6 @@ const (
 
 // New initializes a new OATH session
 func New() (*OATH, error) {
-
 
 	context, err := scard.EstablishContext()
 
