@@ -27,7 +27,7 @@ type OATH struct {
 	Clock   func() time.Time
 	context context
 	Debug   debugger
-}
+} 
 
 const (
 	errFailedToConnect            = "failed to connect to reader"
@@ -42,6 +42,7 @@ const (
 
 // New initializes a new OATH session
 func New() (*OATH, error) {
+
 
 	context, err := scard.EstablishContext()
 
@@ -69,6 +70,9 @@ func New() (*OATH, error) {
 				card:    card,
 				Clock:   time.Now,
 				context: context,
+				// Debug: func(f string, a ...interface{}){
+				// 	fmt.Printf("[ykoath]" + f + "\n", a...)
+				// },
 			}, nil
 
 		}
@@ -124,7 +128,7 @@ func (o *OATH) send(cla, ins, p1, p2 byte, data ...[]byte) (*tvs, error) {
 
 		if code.IsMore() {
 
-			send = []byte{0x00, 0x06, 0x00, 0x00}
+			send = []byte{0x00, 0x06, 0x00, 0x00, byte(code[1])}
 
 			if o.Debug != nil {
 				o.Debug("MORE %d", int(code[1]))
