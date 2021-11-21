@@ -10,6 +10,7 @@ const (
 	errUnknownName   = "no such name configued (%s)"
 	errMultipleMatches = "multiple matches found (%s)"
 	touchRequired    = "touch-required"
+	hotpNoResponse   = "hotp-no-response"
 )
 
 //// Calculate is a high-level function that first identifies all TOTP credentials
@@ -127,6 +128,9 @@ func (o *OATH) CalculateAll() (map[string]string, error) {
 
 		case 0x76:
 			codes = append(codes, otp(tv.value))
+
+		case 0x77:
+			codes = append(codes, hotpNoResponse)
 
 		default:
 			return nil, fmt.Errorf(errUnknownTag, tv.tag)
