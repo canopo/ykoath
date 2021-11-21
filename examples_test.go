@@ -22,7 +22,7 @@ func Example() {
 	_, _ = oath.Select()
 
 	// add the testvector
-	_ = oath.Put("testvector", HmacSha1, Totp, 8, []byte("12345678901234567890"), 0, 0)
+	_ = oath.Put("testvector", HmacSha1, Totp, 8, []byte("12345678901234567890"), false, false, 0)
 
 	names, _ := oath.List()
 

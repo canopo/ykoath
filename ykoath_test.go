@@ -550,7 +550,7 @@ func TestPutAndCalculateTestVector(t *testing.T) {
 		return time.Unix(59, 0)
 	}
 
-	err := client.Put("testvector", HmacSha1, Totp, 8, []byte("12345678901234567890"), 0, 0)
+	err := client.Put("testvector", HmacSha1, Totp, 8, []byte("12345678901234567890"), false, false, 0)
 
 	assert.NoError(err)
 
