@@ -29,7 +29,7 @@ func (o *OATH) Calculate(name string, touchRequiredCallback func(string) error) 
 	touchThenCalc := 1
 	for retry := 0; retry < touchThenCalc; retry++ {
 
-		res, err := o.send(0x00, 0x04, 0x00, 0x00,
+		res, err := o.send(0x00, 0xa2, 0x00, 0x00,
 			write(0x71, []byte(name)),
 			write(0x74, buf),
 		)
@@ -78,7 +78,7 @@ func (o *OATH) CalculateAll() (map[string]string, error) {
 
 	binary.BigEndian.PutUint64(buf, uint64(timestamp))
 
-	res, err := o.send(0x00, 0x05, 0x00, 0x00,
+	res, err := o.send(0x00, 0xa4, 0x00, 0x00,
 		write(0x74, buf),
 	)
 
