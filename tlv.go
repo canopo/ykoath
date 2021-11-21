@@ -4,28 +4,20 @@ import (
 	"fmt"
 )
 
-// tvs is map of tags to slice of byte slices that remembers the insertion order
-type tvs struct {
-	tags   []byte
-	values [][]byte
+type tv struct {
+	tag   byte
+	value []byte
 }
 
-// add adds another tagged value and memorizes the insertion order
-func (t *tvs) add(tag byte, value []byte) {
-
-	t.tags = append(t.tags, tag)
-	t.values = append(t.values, value)
-
-}
+type tvs []tv
 
 // read will read a number of tagged values from a buffer
-func read(buf []byte) *tvs {
+func read(buf []byte) (tvs tvs) {
 
 	var (
 		idx    int
 		length int
 		tag    byte
-		tvs    = &tvs{}
 		value  []byte
 	)
 
@@ -48,7 +40,10 @@ func read(buf []byte) *tvs {
 		idx = idx + length
 
 		// append the result
-		tvs.add(tag, value)
+		tvs = append(tvs, tv{
+			tag:   tag,
+			value: value,
+		})
 
 	}
 
@@ -83,7 +78,7 @@ func write(tag byte, values ...[]byte) []byte {
 
 	// write some length unless this is a one byte value (e.g. for the PUT
 	// instruction's "property" byte)
-	if tag != 0x78 {
+	if length > 1 {
 		data = append(data, byte(length))
 	}
 

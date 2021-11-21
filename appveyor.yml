@@ -1,6 +1,6 @@
 build: off
 
-clone_folder: c:\gopath\src\github.com\canopo\ykoath
+clone_folder: c:\gopath\src\github.com\canokeys\ykoath
 
 environment:
   GOPATH: c:\gopath

@@ -9,7 +9,7 @@ func (o *OATH) Put(name string, a Algorithm, t Type, digits uint8, key []byte, t
 
 	var (
 		alg = (0xf0|byte(a))&0x0f | byte(t)
-		dig = byte(digits)
+		dig = digits
 		prp []byte
 		imf []byte
 	)

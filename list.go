@@ -6,12 +6,14 @@ import (
 
 // Name encapsulates the result of the "LIST" instruction
 type Name struct {
-	Name string
+	Algorithm Algorithm
+	Type      Type
+	Name      string
 }
 
 // String returns a string representation of the algorithm
 func (n *Name) String() string {
-	return fmt.Sprintf("%s", n.Name)
+	return fmt.Sprintf("%s (%s %s)", n.Name, n.Algorithm.String(), n.Type.String())
 }
 
 // List sends a "LIST" instruction, return a list of OATH credentials
@@ -25,24 +27,21 @@ func (o *OATH) List() ([]*Name, error) {
 		return nil, err
 	}
 
-	for i, tag := range res.tags {
+	for _, tv := range res {
 
-		switch tag {
-		case 0x72: // old API
-			fallthrough
-		case 0x71: // new API
-
-			value := res.values[i]
+		switch tv.tag {
+		case 0x72:
 
 			name := &Name{
-				Name: string(value),
+				Algorithm: Algorithm(tv.value[0] & 0x0f),
+				Name:      string(tv.value[1:]),
+				Type:      Type(tv.value[0] & 0xf0),
 			}
 
 			names = append(names, name)
-		case 0x75:
-			// ignore the algorithm/type byte
+
 		default:
-			return nil, fmt.Errorf(errUnknownTag, tag)
+			return nil, fmt.Errorf(errUnknownTag, tv.tag)
 		}
 
 	}

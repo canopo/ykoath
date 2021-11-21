@@ -57,7 +57,7 @@ func New() (*OATH, error) {
 
 	for _, reader := range readers {
 
-		if strings.Contains(reader, "Canokey") && strings.Contains(reader, "OATH") {
+		if strings.Contains(strings.ToLower(reader), "Canokey") {
 
 			card, err := context.Connect(reader, scard.ShareShared, scard.ProtocolAny)
 
@@ -69,9 +69,6 @@ func New() (*OATH, error) {
 				card:    card,
 				Clock:   time.Now,
 				context: context,
-				// Debug: func(f string, a ...interface{}){
-				// 	fmt.Printf("[ykoath]" + f + "\n", a...)
-				// },
 			}, nil
 
 		}
@@ -98,7 +95,7 @@ func (o *OATH) Close() error {
 }
 
 // send sends an APDU to the card
-func (o *OATH) send(cla, ins, p1, p2 byte, data ...[]byte) (*tvs, error) {
+func (o *OATH) send(cla, ins, p1, p2 byte, data ...[]byte) (tvs, error) {
 
 	var (
 		code    code
@@ -127,7 +124,7 @@ func (o *OATH) send(cla, ins, p1, p2 byte, data ...[]byte) (*tvs, error) {
 
 		if code.IsMore() {
 
-			send = []byte{0x00, 0x06, 0x00, 0x00, byte(code[1])}
+			send = []byte{0x00, 0xa5, 0x00, 0x00, code[1]}
 
 			if o.Debug != nil {
 				o.Debug("MORE %d", int(code[1]))
