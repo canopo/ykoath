@@ -19,7 +19,7 @@ const (
 // the device awaiting touch
 func (o *OATH) Calculate(name string, touchRequiredCallback func(string) error) (string, error) {
 
-	res, err := o.calculateAll()
+	res, err := o.CalculateAll()
 
 	if err != nil {
 		return "", nil
@@ -95,9 +95,9 @@ func (o *OATH) calculate(name string) (string, error) {
 
 }
 
-// calculateAll implements the "CALCULATE ALL" instruction to fetch all TOTP
+// CalculateAll implements the "CALCULATE ALL" instruction to fetch all TOTP
 // tokens and their codes (or a constant indicating a touch requirement)
-func (o *OATH) calculateAll() (map[string]string, error) {
+func (o *OATH) CalculateAll() (map[string]string, error) {
 
 	var (
 		buf       = make([]byte, 8)
