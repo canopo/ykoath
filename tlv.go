@@ -81,7 +81,11 @@ func write(tag byte, values ...[]byte) []byte {
 		data = append(data, tag)
 	}
 
-	data = append(data, byte(length))
+	// write some length unless this is a one byte value (e.g. for the PUT
+	// instruction's "property" byte)
+	if tag != 0x78 {
+		data = append(data, byte(length))
+	}
 
 	if length > 255 {
 		panic(fmt.Sprintf("too much data too send (%d bytes)", length))
