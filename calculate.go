@@ -3,11 +3,13 @@ package ykoath
 import (
 	"encoding/binary"
 	"fmt"
+	"math"
 )
 
 const (
 	errNoValuesFound = "no values found in response (% x)"
 	errUnknownName   = "no such name configued (%s)"
+	errInvalidDigits = "invalid digits (%d)"
 	errMultipleMatches = "multiple matches found (%s)"
 	touchRequired    = "touch-required"
 	hotpNoResponse   = "hotp-no-response"
@@ -152,7 +154,10 @@ func (o *OATH) CalculateAll() (map[string]string, error) {
 func otp(value []byte) string {
 
 	digits := value[0]
-	code := binary.BigEndian.Uint32(value[1:])
+	if digits != 6 && digits != 8 {
+		return fmt.Sprintf(errInvalidDigits, digits)
+	}
+	code := binary.BigEndian.Uint32(value[1:]) % uint32(math.Pow10(int(digits)))
 	return fmt.Sprintf(fmt.Sprintf("%%0%dd", digits), code)
 
 }
