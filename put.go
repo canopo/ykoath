@@ -2,19 +2,10 @@ package ykoath
 
 import "encoding/binary"
 
-// OathOption describes options for OATH credentials
-type OathOption byte
-
-const (
-	OathIncreasing = 1 << iota
-	OathTouch
-	OathExportable
-)
-
 // Put sends a "PUT" instruction, storing a new / overwriting an existing OATH
 // credentials with an algorithm and type, 6 or 8 digits one-time password,
 // shared secrets and touch-required bit
-func (o *OATH) Put(name string, a Algorithm, t Type, digits uint8, key []byte, prop OathOption, counter uint32) error {
+func (o *OATH) Put(name string, a Algorithm, t Type, digits uint8, key []byte, touch bool, increasing bool, counter uint32) error {
 
 	var (
 		alg = (0xf0|byte(a))&0x0f | byte(t)
@@ -23,8 +14,9 @@ func (o *OATH) Put(name string, a Algorithm, t Type, digits uint8, key []byte, p
 		imf []byte
 	)
 
-	if prop != 0 {
-		prp = write(0x78, []byte{byte(prop)})
+	if touch || increasing {
+		var b2i = map[bool]byte{false: 0, true: 1}
+		prp = write(0x78, []byte{b2i[touch]<<1 | b2i[increasing]})
 	}
 
 	if counter != 0 {
