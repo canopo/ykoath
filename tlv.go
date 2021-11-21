@@ -72,7 +72,7 @@ func write(tag byte, values ...[]byte) []byte {
 
 	// write the tag unless we skip it (useful for reusing Write for sending the
 	// APDU)
-	if tag != 0x00 {
+	if tag != 0x00 || length == 0 {
 		data = append(data, tag)
 	}
 
