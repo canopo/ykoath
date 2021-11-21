@@ -3,7 +3,6 @@ package ykoath
 import (
 	"encoding/binary"
 	"fmt"
-	"strings"
 )
 
 const (
@@ -13,54 +12,54 @@ const (
 	touchRequired    = "touch-required"
 )
 
-// Calculate is a high-level function that first identifies all TOTP credentials
-// that are configured and returns the matching one (if no touch is required) or
-// fires the callback and then fetches the name again while blocking during
-// the device awaiting touch
-func (o *OATH) Calculate(name string, touchRequiredCallback func(string) error) (string, error) {
+//// Calculate is a high-level function that first identifies all TOTP credentials
+//// that are configured and returns the matching one (if no touch is required) or
+//// fires the callback and then fetches the name again while blocking during
+//// the device awaiting touch
+//func (o *OATH) Calculate(name string, touchRequiredCallback func(string) error) (string, error) {
+//
+//	res, err := o.CalculateAll()
+//
+//	if err != nil {
+//		return "", nil
+//	}
+//
+//	// support matching by name without issuer in the same way that ykman does
+//	// https://github.com/Yubico/yubikey-manager/blob/f493008d78a0ad09016f23dabd1cb658929d9c0e/ykman/cli/oath.py#L543
+//	var key, code string
+//	var matches []string
+//	for k, c := range res {
+//		if strings.Contains(strings.ToLower(k), strings.ToLower(name)) {
+//			key = k
+//			code = c
+//			matches = append(matches, k)
+//		}
+//	}
+//	if len(matches) > 1 {
+//		return "", fmt.Errorf(errMultipleMatches, strings.Join(matches, ","))
+//	}
+//
+//	if key == "" {
+//		return "", fmt.Errorf(errUnknownName, name)
+//	}
+//
+//	if code == touchRequired {
+//
+//		if err := touchRequiredCallback(name); err != nil {
+//			return "", err
+//		}
+//
+//		return o.calculate(key)
+//
+//	}
+//
+//	return code, nil
+//
+//}
 
-	res, err := o.CalculateAll()
-
-	if err != nil {
-		return "", nil
-	}
-
-	// support matching by name without issuer in the same way that ykman does
-	// https://github.com/Yubico/yubikey-manager/blob/f493008d78a0ad09016f23dabd1cb658929d9c0e/ykman/cli/oath.py#L543
-	var key, code string
-	var matches []string
-	for k, c := range res {
-		if strings.Contains(strings.ToLower(k), strings.ToLower(name)) {
-			key = k
-			code = c
-			matches = append(matches, k)
-		}
-	}
-	if len(matches) > 1 {
-		return "", fmt.Errorf(errMultipleMatches, strings.Join(matches, ","))
-	}
-
-	if key == "" {
-		return "", fmt.Errorf(errUnknownName, name)
-	}
-
-	if code == touchRequired {
-
-		if err := touchRequiredCallback(name); err != nil {
-			return "", err
-		}
-
-		return o.calculate(key)
-
-	}
-
-	return code, nil
-
-}
-
-// calculate implements the "CALCULATE" instruction to fetch a single
+// Calculate implements the "CALCULATE" instruction to fetch a single
 // truncated TOTP response
-func (o *OATH) calculate(name string) (string, error) {
+func (o *OATH) Calculate(name string, touchRequiredCallback func(string) error) (string, error) {
 
 	var (
 		buf       = make([]byte, 8)
