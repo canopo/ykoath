@@ -35,3 +35,13 @@ func (o *OATH) Put(name string, a Algorithm, t Type, digits uint8, key []byte, t
 	return err
 
 }
+
+func (o *OATH) Rename(oldName, newName string) error {
+
+	_, err := o.send(0x00, 0x05, 0x00, 0x00,
+		write(0x71, []byte(oldName)),
+		write(0x71, []byte(newName)),
+	)
+
+	return err
+}

@@ -7,12 +7,13 @@ import (
 )
 
 const (
-	errNoValuesFound = "no values found in response (% x)"
-	errUnknownName   = "no such name configued (%s)"
-	errInvalidDigits = "invalid digits (%d)"
+	errNoValuesFound   = "no values found in response (% x)"
+	errUnknownName     = "no such name configued (%s)"
+	errInvalidDigits   = "invalid digits (%d)"
 	errMultipleMatches = "multiple matches found (%s)"
-	touchRequired    = "touch-required"
-	hotpNoResponse   = "hotp-no-response"
+	errAuthentication  = "authentication failed"
+	touchRequired      = "touch-required"
+	hotpNoResponse     = "hotp-no-response"
 )
 
 //// Calculate is a high-level function that first identifies all TOTP credentials

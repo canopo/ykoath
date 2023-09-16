@@ -15,6 +15,10 @@ func (c code) Error() string {
 		return "wrong syntax"
 	} else if bytes.Equal(c, []byte{0x69, 0x84}) {
 		return "no such object"
+	} else if bytes.Equal(c, []byte{0x69, 0x82}) {
+		return "auth required"
+	} else if bytes.Equal(c, []byte{0x69, 0x85}) {
+		return "conditions not satisfied"
 	}
 
 	return fmt.Sprintf("unknown (% x)", []byte(c))
